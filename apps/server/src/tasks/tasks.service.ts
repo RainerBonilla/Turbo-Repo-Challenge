@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
-import { TaskSchema, TaskStatus, TaskPriority } from '@repo/schemas';
+import {
+  TaskSchema,
+  TaskStatus,
+  TaskPriority,
+  TaskSortBy,
+} from '@repo/schemas';
 import { z } from 'zod';
 import { Prisma } from 'generated/prisma/client';
 
@@ -33,12 +38,19 @@ export class TasksService {
     status?: z.infer<typeof TaskStatus>;
     priority?: z.infer<typeof TaskPriority>;
     assignee?: string;
+    sortBy?: z.infer<typeof TaskSortBy>;
   }) {
     const where: any = {};
     if (query.status) where.status = query.status;
     if (query.priority) where.priority = query.priority;
     if (query.assignee) where.assignee = query.assignee;
-    return this.database.task.findMany({ where });
+
+    const orderBy: any = {};
+    if (query.sortBy) {
+      orderBy[query.sortBy] = 'asc';
+    }
+
+    return this.database.task.findMany({ where, orderBy });
   }
 
   async findOne(id: string) {

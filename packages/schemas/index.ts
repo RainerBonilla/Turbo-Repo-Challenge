@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const TaskStatus = z.enum(["pending", "inProgress", "completed"]);
 export const TaskPriority = z.enum(["low", "medium", "high"]);
+export const TaskSortBy = z.enum(["dueDate", "priority", "createdAt"]);
 
 export const TaskSchema = z.object({
   id: z.uuid({ version: "v4" }),
