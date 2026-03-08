@@ -7,8 +7,14 @@ import { TaskCard } from "./TaskCard";
 import { TaskForm } from "./TaskForm";
 import { TaskFilters as TaskFiltersComponent } from "./TaskFilters";
 import { DeleteConfirmationDialog } from "./DeleteConfirmationDialog";
+import { SkeletonLoader } from "./SkeletonLoader";
+import { SearchLoading } from "./SearchLoading";
 import { TaskFilters } from "@/lib/api";
 import { TaskStatsComponent } from "./TaskStats";
+import { LoadingSpinner } from "./LoadingSpinner";
+import { useToast } from "./ToastProvider";
+import { ErrorHandler } from "@/lib/errorHandler";
+import { ErrorDisplay } from "./ErrorDisplay";
 
 type ViewMode = "list" | "create" | "edit";
 
@@ -22,11 +28,19 @@ export function TaskManager() {
     deleteTask,
     fetchTasks,
   } = useTasks();
-  const { stats, loading: statsLoading } = useTaskStats();
+  const {
+    stats,
+    loading: statsLoading,
+    refetch: refetchStats,
+  } = useTaskStats();
+
+  const { showSuccess, showError } = useToast();
 
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [filters, setFilters] = useState<TaskFilters>({});
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [deleteDialog, setDeleteDialog] = useState<{
     isOpen: boolean;
     task: Task | null;
@@ -40,10 +54,14 @@ export function TaskManager() {
     setFormLoading(true);
     try {
       await createTask(data);
+      await refetchStats();
       setViewMode("list");
+      showSuccess("Task created successfully!");
     } catch (error) {
-      console.error("Failed to create task:", error);
-      alert("Failed to create task. Please try again.");
+      showError(error, {
+        label: "Try Again",
+        onClick: () => handleCreateTask(data),
+      });
     } finally {
       setFormLoading(false);
     }
@@ -55,11 +73,15 @@ export function TaskManager() {
     setFormLoading(true);
     try {
       await updateTask(editingTask.id, data);
+      await refetchStats();
       setViewMode("list");
       setEditingTask(null);
+      showSuccess("Task updated successfully!");
     } catch (error) {
-      console.error("Failed to update task:", error);
-      alert("Failed to update task. Please try again.");
+      showError(error, {
+        label: "Try Again",
+        onClick: () => handleUpdateTask(data),
+      });
     } finally {
       setFormLoading(false);
     }
@@ -80,18 +102,47 @@ export function TaskManager() {
   const confirmDeleteTask = async () => {
     if (!deleteDialog.task) return;
 
+    setFormLoading(true);
     try {
       await deleteTask(deleteDialog.task.id);
+      await refetchStats();
       setDeleteDialog({ isOpen: false, task: null });
+      showSuccess("Task deleted successfully!");
     } catch (error) {
-      console.error("Failed to delete task:", error);
-      alert("Failed to delete task. Please try again.");
+      showError(error, {
+        label: "Try Again",
+        onClick: confirmDeleteTask,
+      });
+    } finally {
+      setFormLoading(false);
     }
   };
 
-  const handleFiltersChange = (newFilters: TaskFilters) => {
+  const handleFiltersChange = async (newFilters: TaskFilters) => {
     setFilters(newFilters);
-    fetchTasks(newFilters);
+
+    // Set searching state based on active filters
+    const hasFilters = Object.keys(newFilters).length > 0;
+    if (hasFilters) {
+      setIsSearching(true);
+      // Create a readable query string
+      const queryParts = [];
+      if (newFilters.status) queryParts.push(`status: ${newFilters.status}`);
+      if (newFilters.priority)
+        queryParts.push(`priority: ${newFilters.priority}`);
+      if (newFilters.assignee)
+        queryParts.push(`assignee: ${newFilters.assignee}`);
+      if (newFilters.sortBy) queryParts.push(`sorted by: ${newFilters.sortBy}`);
+      setSearchQuery(queryParts.join(", "));
+
+      // Await the fetch and then turn off loading
+      await fetchTasks(newFilters);
+      setIsSearching(false);
+    } else {
+      setIsSearching(false);
+      setSearchQuery("");
+      await fetchTasks(newFilters);
+    }
   };
 
   const renderContent = () => {
@@ -128,6 +179,8 @@ export function TaskManager() {
               onFiltersChange={handleFiltersChange}
             />
 
+            <SearchLoading isLoading={isSearching} query={searchQuery} />
+
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0 mb-4 sm:mb-6">
               <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
                 Tasks ({tasks.length})
@@ -154,46 +207,19 @@ export function TaskManager() {
             </div>
 
             {tasksError && (
-              <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-4 sm:mb-6">
-                <div className="flex">
-                  <div className="ml-3 flex-1">
-                    <h3 className="text-sm font-medium text-red-800">
-                      Error loading tasks
-                    </h3>
-                    <div className="mt-2 text-sm text-red-700">
-                      {tasksError}
-                    </div>
-                    <div className="mt-4">
-                      <button
-                        onClick={() => fetchTasks(filters)}
-                        className="bg-red-100 px-3 py-2 rounded-md text-sm font-medium text-red-800 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-                      >
-                        Try again
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <ErrorDisplay
+                error={tasksError}
+                onRetry={() => fetchTasks(filters)}
+                className="mb-4 sm:mb-6"
+              />
             )}
 
             {tasksLoading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                {[...Array(6)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="bg-white rounded-lg shadow-md p-4 sm:p-6 animate-pulse"
-                  >
-                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-3 sm:mb-4"></div>
-                    <div className="h-3 bg-gray-200 rounded w-full mb-2"></div>
-                    <div className="h-3 bg-gray-200 rounded w-2/3 mb-3 sm:mb-4"></div>
-                    <div className="flex gap-2 mb-3 sm:mb-4">
-                      <div className="h-5 sm:h-6 bg-gray-200 rounded-full w-16"></div>
-                      <div className="h-5 sm:h-6 bg-gray-200 rounded-full w-20"></div>
-                    </div>
-                    <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-                  </div>
-                ))}
-              </div>
+              <SkeletonLoader
+                count={6}
+                type="card"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+              />
             ) : tasks.length === 0 ? (
               <div className="text-center py-8 sm:py-12">
                 <svg
@@ -268,7 +294,11 @@ export function TaskManager() {
           </p>
         </div>
 
-        {renderContent()}
+        {tasksLoading && statsLoading && viewMode === "list" ? (
+          <LoadingSpinner message="Loading your task dashboard..." />
+        ) : (
+          renderContent()
+        )}
       </div>
 
       <DeleteConfirmationDialog
@@ -276,6 +306,7 @@ export function TaskManager() {
         taskTitle={deleteDialog.task?.title || ""}
         onConfirm={confirmDeleteTask}
         onCancel={() => setDeleteDialog({ isOpen: false, task: null })}
+        loading={formLoading}
       />
     </div>
   );

@@ -9,9 +9,7 @@ export function TaskStatsComponent({ stats, loading = false }: TaskStatsProps) {
   if (loading) {
     return (
       <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-4 sm:mb-6">
-        <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
-          Task Statistics
-        </h3>
+        <div className="h-5 bg-gray-200 rounded w-40 mb-4 animate-pulse"></div>
         <div className="animate-pulse">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div className="space-y-3">

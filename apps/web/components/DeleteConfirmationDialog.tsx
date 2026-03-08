@@ -58,10 +58,17 @@ export function DeleteConfirmationDialog({
             </button>
             <button
               onClick={onConfirm}
-              className="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors disabled:opacity-50 text-sm sm:text-base"
+              className="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors disabled:opacity-50 text-sm sm:text-base flex items-center justify-center gap-2"
               disabled={loading}
             >
-              {loading ? "Deleting..." : "Delete Task"}
+              {loading ? (
+                <>
+                  <div className="w-4 h-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                  <span>Deleting...</span>
+                </>
+              ) : (
+                <span>Delete Task</span>
+              )}
             </button>
           </div>
         </div>

@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { Task, TaskStats } from "@repo/schemas";
 import { TaskFilters, CreateTaskData, UpdateTaskData } from "../api";
+import { ErrorHandler, AppError } from "../errorHandler";
 
 export function useTasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<AppError | null>(null);
 
   const fetchTasks = useCallback(async (filters?: TaskFilters) => {
     setLoading(true);
@@ -15,7 +16,8 @@ export function useTasks() {
       const data = await apiClient.getTasks(filters);
       setTasks(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch tasks");
+      const appError = ErrorHandler.parseError(err);
+      setError(appError);
     } finally {
       setLoading(false);
     }
@@ -28,9 +30,8 @@ export function useTasks() {
       setTasks((prev) => [newTask, ...prev]);
       return newTask;
     } catch (err) {
-      throw new Error(
-        err instanceof Error ? err.message : "Failed to create task",
-      );
+      const appError = ErrorHandler.parseError(err);
+      throw appError;
     }
   }, []);
 
@@ -43,9 +44,8 @@ export function useTasks() {
       );
       return updatedTask;
     } catch (err) {
-      throw new Error(
-        err instanceof Error ? err.message : "Failed to update task",
-      );
+      const appError = ErrorHandler.parseError(err);
+      throw appError;
     }
   }, []);
 
@@ -55,9 +55,8 @@ export function useTasks() {
       await apiClient.deleteTask(id);
       setTasks((prev) => prev.filter((task) => task.id !== id));
     } catch (err) {
-      throw new Error(
-        err instanceof Error ? err.message : "Failed to delete task",
-      );
+      const appError = ErrorHandler.parseError(err);
+      throw appError;
     }
   }, []);
 
@@ -79,7 +78,7 @@ export function useTasks() {
 export function useTaskStats() {
   const [stats, setStats] = useState<TaskStats | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<AppError | null>(null);
 
   const fetchStats = useCallback(async () => {
     setLoading(true);
@@ -89,7 +88,8 @@ export function useTaskStats() {
       const data = await apiClient.getTaskStats();
       setStats(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch stats");
+      const appError = ErrorHandler.parseError(err);
+      setError(appError);
     } finally {
       setLoading(false);
     }

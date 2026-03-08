@@ -180,6 +180,7 @@ export class TasksController {
     try {
       return await this.tasksService.update(id, updateTaskDto);
     } catch (error) {
+      console.log('Error updating task:', error);
       if (error instanceof ZodError) {
         throw new BadRequestException('Invalid input data: ' + error.message);
       }

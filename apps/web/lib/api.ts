@@ -6,6 +6,7 @@ import {
   TaskPriority,
   TaskSortBy,
 } from "@repo/schemas";
+import { AppError, ErrorHandler } from "./errorHandler";
 
 export type TaskStatusType = z.infer<typeof TaskStatus>;
 export type TaskPriorityType = z.infer<typeof TaskPriority>;
@@ -45,19 +46,41 @@ class ApiClient {
   ): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`;
 
-    const response = await fetch(url, {
-      headers: {
-        "Content-Type": "application/json",
-        ...options?.headers,
-      },
-      ...options,
-    });
+    try {
+      const response = await fetch(url, {
+        headers: {
+          "Content-Type": "application/json",
+          ...options?.headers,
+        },
+        ...options,
+      });
 
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
+      if (!response.ok) {
+        let errorMessage = `API Error: ${response.status} ${response.statusText}`;
+
+        // Try to get more details from response body
+        try {
+          const errorData = await response.json();
+          if (errorData.message) {
+            errorMessage = errorData.message;
+          } else if (errorData.error) {
+            errorMessage = errorData.error;
+          }
+        } catch {
+          // If we can't parse the error response, use the default message
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      return response.json();
+    } catch (error) {
+      // Re-throw network errors and other fetch errors
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        throw new Error("Network error: Unable to connect to the server. Please check your internet connection.");
+      }
+      throw error;
     }
-
-    return response.json();
   }
 
   // Task CRUD operations
