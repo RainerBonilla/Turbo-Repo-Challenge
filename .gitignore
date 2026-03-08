@@ -44,4 +44,4 @@ generated
 # Ignore Prisma generated folder
 /node_modules/.prisma/client
 # Or, if you use a custom output path
-/apps/server/generated/client
+apps/server/generated/client
