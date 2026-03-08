@@ -62,7 +62,13 @@ export class TasksService {
     const validatedData = UpdateTaskDto.parse(data);
     return this.database.task.update({
       where: { id },
-      data: { ...validatedData, updatedAt: new Date() },
+      data: {
+        ...validatedData,
+        dueDate: validatedData.dueDate
+          ? new Date(validatedData.dueDate)
+          : validatedData.dueDate,
+        updatedAt: new Date(),
+      },
     });
   }
 

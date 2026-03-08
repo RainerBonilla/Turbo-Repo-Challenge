@@ -25,22 +25,22 @@ export function TaskFilters({ filters, onFiltersChange }: TaskFiltersProps) {
   const hasActiveFilters = Object.keys(filters).length > 0;
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">
+    <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-4 sm:mb-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0 mb-4">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-900">
           Filters & Sorting
         </h3>
         {hasActiveFilters && (
           <button
             onClick={clearFilters}
-            className="text-sm text-blue-600 hover:text-blue-800 underline"
+            className="text-sm text-blue-600 hover:text-blue-800 underline self-start sm:self-auto"
           >
             Clear all filters
           </button>
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <div>
           <label
             htmlFor="status-filter"
@@ -120,51 +120,53 @@ export function TaskFilters({ filters, onFiltersChange }: TaskFiltersProps) {
       </div>
 
       {hasActiveFilters && (
-        <div className="mt-4 flex flex-wrap gap-2">
-          {filters.status && (
-            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
-              Status: {filters.status}
-              <button
-                onClick={() => handleFilterChange("status", "")}
-                className="ml-1 text-blue-600 hover:text-blue-800"
-              >
-                ×
-              </button>
-            </span>
-          )}
-          {filters.priority && (
-            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-orange-100 text-orange-800">
-              Priority: {filters.priority}
-              <button
-                onClick={() => handleFilterChange("priority", "")}
-                className="ml-1 text-orange-600 hover:text-orange-800"
-              >
-                ×
-              </button>
-            </span>
-          )}
-          {filters.assignee && (
-            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
-              Assignee: {filters.assignee}
-              <button
-                onClick={() => handleFilterChange("assignee", "")}
-                className="ml-1 text-green-600 hover:text-green-800"
-              >
-                ×
-              </button>
-            </span>
-          )}
-          {filters.sortBy && (
-            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-purple-100 text-purple-800">
-              Sort: {filters.sortBy}
-              <button
-                onClick={() => handleFilterChange("sortBy", "")}
-                className="ml-1 text-purple-600 hover:text-purple-800"
-              >
-                ×
-              </button>
-            </span>
-          )}
+        <div className="mt-4 pt-4 border-t border-gray-200">
+          <div className="flex flex-wrap gap-2">
+            {filters.status && (
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
+                Status: {filters.status}
+                <button
+                  onClick={() => handleFilterChange("status", "")}
+                  className="ml-1 text-blue-600 hover:text-blue-800"
+                >
+                  ×
+                </button>
+              </span>
+            )}
+            {filters.priority && (
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-orange-100 text-orange-800">
+                Priority: {filters.priority}
+                <button
+                  onClick={() => handleFilterChange("priority", "")}
+                  className="ml-1 text-orange-600 hover:text-orange-800"
+                >
+                  ×
+                </button>
+              </span>
+            )}
+            {filters.assignee && (
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
+                Assignee: {filters.assignee}
+                <button
+                  onClick={() => handleFilterChange("assignee", "")}
+                  className="ml-1 text-green-600 hover:text-green-800"
+                >
+                  ×
+                </button>
+              </span>
+            )}
+            {filters.sortBy && (
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-purple-100 text-purple-800">
+                Sort: {filters.sortBy}
+                <button
+                  onClick={() => handleFilterChange("sortBy", "")}
+                  className="ml-1 text-purple-600 hover:text-purple-800"
+                >
+                  ×
+                </button>
+              </span>
+            )}
+          </div>
         </div>
       )}
     </div>
