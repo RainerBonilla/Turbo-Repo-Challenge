@@ -42,19 +42,19 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-      <div className="flex justify-between items-start mb-4">
-        <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">
+    <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 hover:shadow-lg transition-shadow">
+      <div className="flex justify-between items-start mb-3 sm:mb-4">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-900 line-clamp-2 flex-1 pr-2">
           {task.title}
         </h3>
-        <div className="flex gap-2">
+        <div className="flex gap-1 sm:gap-2 shrink-0">
           <button
             onClick={() => onEdit(task)}
-            className="text-blue-600 hover:text-blue-800 p-1"
+            className="text-blue-600 hover:text-blue-800 p-1.5 sm:p-1 rounded-md hover:bg-blue-50 transition-colors"
             title="Edit task"
           >
             <svg
-              className="w-5 h-5"
+              className="w-4 h-4 sm:w-5 sm:h-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -69,11 +69,11 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
           </button>
           <button
             onClick={() => onDelete(task.id)}
-            className="text-red-600 hover:text-red-800 p-1"
+            className="text-red-600 hover:text-red-800 p-1.5 sm:p-1 rounded-md hover:bg-red-50 transition-colors"
             title="Delete task"
           >
             <svg
-              className="w-5 h-5"
+              className="w-4 h-4 sm:w-5 sm:h-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -107,19 +107,26 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
         </span>
       </div>
 
-      <div className="flex justify-between items-center text-sm text-gray-500">
-        <div className="flex flex-col">
+      <div className="flex justify-between items-end text-xs sm:text-sm text-gray-500 mt-3 sm:mt-4">
+        <div className="flex flex-col gap-1 min-w-0 flex-1">
           {task.assignee && (
-            <span className="font-medium text-gray-700">
-              Assigned to: {task.assignee}
+            <span className="font-medium text-gray-700 truncate">
+              {task.assignee}
             </span>
           )}
-          {task.dueDate && <span>Due: {formatDate(task.dueDate)}</span>}
+          {task.dueDate && (
+            <span className="text-black font-medium">
+              Due: {formatDate(task.dueDate)}
+            </span>
+          )}
         </div>
-        <div className="text-right">
-          <div>Created: {formatDate(task.createdAt)}</div>
+        <div className="text-right shrink-0 ml-2">
+          <div className="text-gray-400">Created</div>
+          <div className="font-medium">{formatDate(task.createdAt)}</div>
           {task.updatedAt !== task.createdAt && (
-            <div>Updated: {formatDate(task.updatedAt)}</div>
+            <div className="text-gray-400 text-xs mt-0.5">
+              Updated {formatDate(task.updatedAt)}
+            </div>
           )}
         </div>
       </div>

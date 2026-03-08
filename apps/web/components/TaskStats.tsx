@@ -8,12 +8,12 @@ interface TaskStatsProps {
 export function TaskStatsComponent({ stats, loading = false }: TaskStatsProps) {
   if (loading) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-4 sm:mb-6">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
           Task Statistics
         </h3>
         <div className="animate-pulse">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div className="space-y-3">
               <div className="h-4 bg-gray-200 rounded w-1/2"></div>
               <div className="space-y-2">
@@ -38,8 +38,8 @@ export function TaskStatsComponent({ stats, loading = false }: TaskStatsProps) {
 
   if (!stats) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-4 sm:mb-6">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
           Task Statistics
         </h3>
         <p className="text-gray-500">No statistics available</p>
@@ -79,37 +79,39 @@ export function TaskStatsComponent({ stats, loading = false }: TaskStatsProps) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
+    <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-4 sm:mb-6">
+      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
         Task Statistics
       </h3>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         {/* Status Breakdown */}
         <div>
-          <h4 className="text-md font-medium text-gray-700 mb-3">By Status</h4>
+          <h4 className="text-sm sm:text-md font-medium text-gray-700 mb-3">
+            By Status
+          </h4>
           <div className="space-y-3">
             {Object.entries(stats.status).map(([status, count]) => {
               const percentage =
                 totalTasks > 0 ? (count / totalTasks) * 100 : 0;
               return (
                 <div key={status} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
                     <div
-                      className={`w-3 h-3 rounded-full ${getStatusColor(status)}`}
+                      className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full ${getStatusColor(status)} shrink-0`}
                     ></div>
-                    <span className="text-sm text-gray-600 capitalize">
+                    <span className="text-xs sm:text-sm text-gray-600 capitalize truncate">
                       {status.replace("inProgress", "In Progress")}
                     </span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-20 bg-gray-200 rounded-full h-2">
+                  <div className="flex items-center gap-2 shrink-0 ml-2">
+                    <div className="w-12 sm:w-20 bg-gray-200 rounded-full h-1.5 sm:h-2">
                       <div
-                        className={`h-2 rounded-full ${getStatusColor(status)}`}
+                        className={`h-1.5 sm:h-2 rounded-full ${getStatusColor(status)}`}
                         style={{ width: `${percentage}%` }}
                       ></div>
                     </div>
-                    <span className="text-sm font-medium text-gray-900 w-8 text-right">
+                    <span className="text-xs sm:text-sm font-medium text-gray-900 w-6 sm:w-8 text-right">
                       {count}
                     </span>
                   </div>
@@ -121,7 +123,7 @@ export function TaskStatsComponent({ stats, loading = false }: TaskStatsProps) {
 
         {/* Priority Breakdown */}
         <div>
-          <h4 className="text-md font-medium text-gray-700 mb-3">
+          <h4 className="text-sm sm:text-md font-medium text-gray-700 mb-3">
             By Priority
           </h4>
           <div className="space-y-3">
@@ -133,22 +135,22 @@ export function TaskStatsComponent({ stats, loading = false }: TaskStatsProps) {
                   key={priority}
                   className="flex items-center justify-between"
                 >
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
                     <div
-                      className={`w-3 h-3 rounded-full ${getPriorityColor(priority)}`}
+                      className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full ${getPriorityColor(priority)} shrink-0`}
                     ></div>
-                    <span className="text-sm text-gray-600 capitalize">
+                    <span className="text-xs sm:text-sm text-gray-600 capitalize truncate">
                       {priority}
                     </span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-20 bg-gray-200 rounded-full h-2">
+                  <div className="flex items-center gap-2 shrink-0 ml-2">
+                    <div className="w-12 sm:w-20 bg-gray-200 rounded-full h-1.5 sm:h-2">
                       <div
-                        className={`h-2 rounded-full ${getPriorityColor(priority)}`}
+                        className={`h-1.5 sm:h-2 rounded-full ${getPriorityColor(priority)}`}
                         style={{ width: `${percentage}%` }}
                       ></div>
                     </div>
-                    <span className="text-sm font-medium text-gray-900 w-8 text-right">
+                    <span className="text-xs sm:text-sm font-medium text-gray-900 w-6 sm:w-8 text-right">
                       {count}
                     </span>
                   </div>
@@ -160,12 +162,14 @@ export function TaskStatsComponent({ stats, loading = false }: TaskStatsProps) {
       </div>
 
       {/* Summary */}
-      <div className="mt-6 pt-4 border-t border-gray-200">
+      <div className="mt-4 sm:mt-6 pt-4 border-t border-gray-200">
         <div className="flex justify-between items-center">
-          <span className="text-lg font-semibold text-gray-900">
+          <span className="text-base sm:text-lg font-semibold text-gray-900">
             Total Tasks
           </span>
-          <span className="text-2xl font-bold text-blue-600">{totalTasks}</span>
+          <span className="text-xl sm:text-2xl font-bold text-blue-600">
+            {totalTasks}
+          </span>
         </div>
       </div>
     </div>
