@@ -16,4 +16,10 @@ export const TaskSchema = z.object({
   updatedAt: z.iso.date(),
 });
 
-export type User = z.infer<typeof TaskSchema>;
+export const TaskStatsSchema = z.object({
+  status: z.record(z.string(), z.number().int().min(0)),
+  priority: z.record(z.string(), z.number().int().min(0)),
+});
+
+export type Task = z.infer<typeof TaskSchema>;
+export type TaskStats = z.infer<typeof TaskStatsSchema>;

@@ -5,6 +5,7 @@ import {
   TaskStatus,
   TaskPriority,
   TaskSortBy,
+  TaskStatsSchema,
 } from '@repo/schemas';
 import { z } from 'zod';
 import { Prisma } from 'generated/prisma/client';
@@ -95,6 +96,6 @@ export class TasksService {
       }
     }
 
-    return result;
+    return TaskStatsSchema.parse(result);
   }
 }

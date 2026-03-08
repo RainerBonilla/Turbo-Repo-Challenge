@@ -17,10 +17,10 @@ export class CreateTaskDto {
 
   @ApiProperty({
     description: 'Task status',
-    enum: ['pending', 'in-progress', 'completed'],
+    enum: ['pending', 'inProgress', 'completed'],
     example: 'pending',
   })
-  status: 'pending' | 'in-progress' | 'completed';
+  status: 'pending' | 'inProgress' | 'completed';
 
   @ApiProperty({
     description: 'Task priority',
@@ -66,11 +66,11 @@ export class UpdateTaskDto {
 
   @ApiProperty({
     description: 'Task status',
-    enum: ['pending', 'in-progress', 'completed'],
-    example: 'in-progress',
+    enum: ['pending', 'inProgress', 'completed'],
+    example: 'inProgress',
     required: false,
   })
-  status?: 'pending' | 'in-progress' | 'completed';
+  status?: 'pending' | 'inProgress' | 'completed';
 
   @ApiProperty({
     description: 'Task priority',
@@ -121,10 +121,10 @@ export class TaskResponseDto {
 
   @ApiProperty({
     description: 'Task status',
-    enum: ['pending', 'in-progress', 'completed'],
+    enum: ['pending', 'inProgress', 'completed'],
     example: 'pending',
   })
-  status: 'pending' | 'in-progress' | 'completed';
+  status: 'pending' | 'inProgress' | 'completed';
 
   @ApiProperty({
     description: 'Task priority',
@@ -160,4 +160,30 @@ export class TaskResponseDto {
     format: 'date-time',
   })
   updatedAt: string;
+}
+
+export class TaskStatsDto {
+  @ApiProperty({
+    description: 'Task count by status',
+    type: 'object',
+    additionalProperties: { type: 'number' },
+    example: {
+      pending: 5,
+      'in-progress': 3,
+      completed: 12,
+    },
+  })
+  status: Record<string, number>;
+
+  @ApiProperty({
+    description: 'Task count by priority',
+    type: 'object',
+    additionalProperties: { type: 'number' },
+    example: {
+      low: 8,
+      medium: 7,
+      high: 5,
+    },
+  })
+  priority: Record<string, number>;
 }
