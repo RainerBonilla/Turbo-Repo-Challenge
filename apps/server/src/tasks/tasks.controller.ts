@@ -24,8 +24,13 @@ import { ZodError } from 'zod';
 import { z } from 'zod';
 import { TasksService } from './tasks.service';
 import { Prisma, TaskPriority, TaskStatus } from 'generated/prisma/client';
-import { TaskSortBy } from '@repo/schemas';
-import { CreateTaskDto, UpdateTaskDto, TaskResponseDto } from './dtos';
+import { TaskSortBy, TaskStats } from '@repo/schemas';
+import {
+  CreateTaskDto,
+  UpdateTaskDto,
+  TaskResponseDto,
+  TaskStatsDto,
+} from './dtos';
 
 @ApiTags('tasks')
 @Controller('tasks')
@@ -61,19 +66,7 @@ export class TasksController {
   @ApiResponse({
     status: 200,
     description: 'Statistics retrieved successfully',
-    schema: {
-      type: 'object',
-      properties: {
-        status: {
-          type: 'object',
-          additionalProperties: { type: 'number' },
-        },
-        priority: {
-          type: 'object',
-          additionalProperties: { type: 'number' },
-        },
-      },
-    },
+    type: TaskStatsDto,
   })
   async getStats() {
     try {
@@ -88,7 +81,9 @@ export class TasksController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all tasks with optional filtering and sorting' })
+  @ApiOperation({
+    summary: 'Get all tasks with optional filtering and sorting',
+  })
   @ApiQuery({
     name: 'status',
     required: false,
