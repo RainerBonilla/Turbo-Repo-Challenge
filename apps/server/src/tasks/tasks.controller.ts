@@ -12,9 +12,11 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
-import { TasksService } from './tasks.service';
-import { Prisma } from 'generated/prisma/client';
 import { ZodError } from 'zod';
+import { z } from 'zod';
+import { TasksService } from './tasks.service';
+import { Prisma, TaskPriority, TaskStatus } from 'generated/prisma/client';
+import { TaskSortBy } from '@repo/schemas';
 
 @Controller('tasks')
 export class TasksController {
@@ -51,15 +53,17 @@ export class TasksController {
 
   @Get()
   async findAll(
-    @Query('status') status?: string,
-    @Query('priority') priority?: string,
+    @Query('status') status?: TaskStatus,
+    @Query('priority') priority?: TaskPriority,
     @Query('assignee') assignee?: string,
+    @Query('sortBy') sortBy?: z.infer<typeof TaskSortBy>,
   ) {
     try {
       return await this.tasksService.findAll({
-        status: status as any,
-        priority: priority as any,
+        status: status,
+        priority: priority,
         assignee,
+        sortBy,
       });
     } catch (error) {
       console.error('Error retrieving tasks:', error);
