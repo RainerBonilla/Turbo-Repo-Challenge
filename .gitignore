@@ -36,3 +36,12 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
+# Prisma
+prisma/migrations/
+prisma/dev.db
+generated
+# Ignore Prisma generated folder
+/node_modules/.prisma/client
+# Or, if you use a custom output path
+apps/server/generated/client
