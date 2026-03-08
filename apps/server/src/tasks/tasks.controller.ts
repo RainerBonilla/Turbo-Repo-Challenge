@@ -12,17 +12,35 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiQuery,
+  ApiParam,
+  ApiResponse,
+  ApiBody,
+} from '@nestjs/swagger';
 import { ZodError } from 'zod';
 import { z } from 'zod';
 import { TasksService } from './tasks.service';
 import { Prisma, TaskPriority, TaskStatus } from 'generated/prisma/client';
 import { TaskSortBy } from '@repo/schemas';
+import { CreateTaskDto, UpdateTaskDto, TaskResponseDto } from './dtos';
 
+@ApiTags('tasks')
 @Controller('tasks')
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
   @Post()
+  @ApiOperation({ summary: 'Create a new task' })
+  @ApiBody({ type: CreateTaskDto })
+  @ApiResponse({
+    status: 201,
+    description: 'Task created successfully',
+    type: TaskResponseDto,
+  })
+  @ApiResponse({ status: 400, description: 'Invalid input data' })
   async create(@Body() createTaskDto: Prisma.TaskCreateInput) {
     try {
       return await this.tasksService.create(createTaskDto);
@@ -39,6 +57,24 @@ export class TasksController {
   }
 
   @Get('/stats')
+  @ApiOperation({ summary: 'Get task statistics' })
+  @ApiResponse({
+    status: 200,
+    description: 'Statistics retrieved successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        status: {
+          type: 'object',
+          additionalProperties: { type: 'number' },
+        },
+        priority: {
+          type: 'object',
+          additionalProperties: { type: 'number' },
+        },
+      },
+    },
+  })
   async getStats() {
     try {
       return await this.tasksService.getStats();
@@ -52,6 +88,36 @@ export class TasksController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get all tasks with optional filtering and sorting' })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    enum: ['pending', 'in-progress', 'completed'],
+    description: 'Filter by task status',
+  })
+  @ApiQuery({
+    name: 'priority',
+    required: false,
+    enum: ['low', 'medium', 'high'],
+    description: 'Filter by task priority',
+  })
+  @ApiQuery({
+    name: 'assignee',
+    required: false,
+    type: String,
+    description: 'Filter by assignee name',
+  })
+  @ApiQuery({
+    name: 'sortBy',
+    required: false,
+    enum: ['dueDate', 'priority', 'createdAt'],
+    description: 'Sort results by field',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Tasks retrieved successfully',
+    type: [TaskResponseDto],
+  })
   async findAll(
     @Query('status') status?: TaskStatus,
     @Query('priority') priority?: TaskPriority,
@@ -75,6 +141,14 @@ export class TasksController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get a task by ID' })
+  @ApiParam({ name: 'id', type: String, description: 'Task ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Task retrieved successfully',
+    type: TaskResponseDto,
+  })
+  @ApiResponse({ status: 404, description: 'Task not found' })
   async findOne(@Param('id') id: string) {
     try {
       const task = await this.tasksService.findOne(id);
@@ -94,6 +168,16 @@ export class TasksController {
   }
 
   @Put(':id')
+  @ApiOperation({ summary: 'Update a task' })
+  @ApiParam({ name: 'id', type: String, description: 'Task ID' })
+  @ApiBody({ type: UpdateTaskDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Task updated successfully',
+    type: TaskResponseDto,
+  })
+  @ApiResponse({ status: 404, description: 'Task not found' })
+  @ApiResponse({ status: 400, description: 'Invalid input data' })
   async update(
     @Param('id') id: string,
     @Body() updateTaskDto: Prisma.TaskUpdateInput,
@@ -117,6 +201,14 @@ export class TasksController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a task' })
+  @ApiParam({ name: 'id', type: String, description: 'Task ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Task deleted successfully',
+    type: TaskResponseDto,
+  })
+  @ApiResponse({ status: 404, description: 'Task not found' })
   async remove(@Param('id') id: string) {
     try {
       return await this.tasksService.remove(id);
