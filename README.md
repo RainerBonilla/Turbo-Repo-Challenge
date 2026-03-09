@@ -132,26 +132,23 @@ The `docker-compose.yaml` file provides a ready-to-use PostgreSQL database for d
   - pgAdmin: admin@example.com/adminpassword
 
 This setup ensures a consistent development environment without requiring local PostgreSQL installation.
-yarn dlx turbo build
-pnpm exec turbo build
 
-````
+## AI Agent Collaboration
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+This project was developed with extensive AI assistance, leveraging GitHub Copilot and other AI tools to accelerate development while maintaining code quality. The approach focused on:
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+- **Iterative Development**: Using AI to generate initial code structures, then refining through human oversight
+- **Code Organization**: AI-assisted refactoring to implement clean architecture patterns and organize components into logical folder structures
+- **Documentation**: AI-generated comprehensive README and inline documentation
+- **Error Resolution**: AI-powered debugging and error fixing during development
+- **Best Practices**: Incorporating AI suggestions for modern development standards, TypeScript usage, and framework-specific conventions
 
-```sh
-turbo build --filter=docs
-````
-
-Without global `turbo`:
-
-```sh
+The collaboration balanced AI efficiency with human architectural decisions, ensuring the codebase follows industry best practices while being maintainable and scalable.
 npx turbo build --filter=docs
 yarn exec turbo build --filter=docs
 pnpm exec turbo build --filter=docs
-```
+
+````
 
 ### Develop
 
@@ -162,7 +159,7 @@ With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#gl
 ```sh
 cd my-turborepo
 turbo dev
-```
+````
 
 Without global `turbo`, use your package manager:
 
