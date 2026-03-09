@@ -14,6 +14,7 @@ This project follows clean architecture principles to ensure maintainability, te
 - **Infrastructure Layer**: Database interactions via Prisma ORM, external APIs, and utilities.
 
 The architecture promotes:
+
 - Dependency inversion (inner layers don't depend on outer layers)
 - Single responsibility principle across modules
 - Easy testing through dependency injection
@@ -22,12 +23,14 @@ The architecture promotes:
 ## Apps and Tech Stack
 
 ### Server App
+
 A RESTful API built with **NestJS** that provides task management endpoints. It uses **Prisma** as the ORM for database interactions with **PostgreSQL**.
 
 - **Tech Stack**: NestJS, TypeScript, Prisma, PostgreSQL, Swagger (for API documentation)
 - **Features**: CRUD operations for tasks, error handling, validation, modular architecture
 
 ### Web App
+
 A modern single-page application built with **Next.js** for task management. It provides an intuitive UI for users to interact with tasks.
 
 - **Tech Stack**: Next.js, React, TypeScript, Tailwind CSS
@@ -36,6 +39,7 @@ A modern single-page application built with **Next.js** for task management. It 
 ## Installation and Setup
 
 ### Prerequisites
+
 - **Node.js** version 18 or higher
 - **pnpm** package manager (version 10.11.0)
 - **Docker** and Docker Compose for database setup
@@ -43,48 +47,76 @@ A modern single-page application built with **Next.js** for task management. It 
 ### Steps to Run
 
 1. **Clone the repository**:
+
    ```bash
    git clone <repository-url>
    cd turbo-repo-challenge
    ```
 
 2. **Install dependencies**:
+
    ```bash
    pnpm install
    ```
 
-3. **Set up the database**:
+3. **Set up environment variables**:
+
+   Create `.env` files in the respective app directories:
+
+   **For the server app** (`apps/server/.env`):
+
+   ```env
+   DATABASE_URL="postgresql://myuser:mypassword@localhost:5432/mydatabase"
+   FRONTEND_URL="http://localhost:3000"
+   PORT=8000
+   NODE_ENV="development"
+   ```
+
+   **For the web app** (`apps/web/.env.local`):
+
+   ```env
+   NEXT_PUBLIC_API_URL="http://localhost:8000"
+   ```
+
+4. **Set up the database**:
+
    ```bash
    docker-compose up -d
    ```
+
    This starts a PostgreSQL database and pgAdmin interface for development.
 
-4. **Run database migrations** (for the server):
+5. **Run database migrations** (for the server):
+
    ```bash
    cd apps/server
    npx prisma migrate dev
    cd ../..
    ```
 
-5. **Start the development servers**:
+6. **Start the development servers**:
+
    ```bash
    pnpm dev
    ```
-   This will start both the server (typically on port 3001) and web app (on port 3000) concurrently.
 
-6. **Access the application**:
+   This will start both the server (typically on port 8000) and web app (on port 3000) concurrently.
+
+7. **Access the application**:
    - Web app: http://localhost:3000
-   - API server: http://localhost:3001
+   - API server: http://localhost:8000
    - pgAdmin: http://localhost:5050 (admin@example.com / adminpassword)
 
 ## Environment Requirements
 
 ### Server App
+
 - **Node.js**: >=18
 - **Database**: PostgreSQL (provided via Docker Compose)
 - **Environment Variables**: Database connection string (configured in Prisma)
 
 ### Web App
+
 - **Node.js**: >=18
 - **Browser**: Modern browser with JavaScript enabled
 
@@ -95,14 +127,15 @@ The `docker-compose.yaml` file provides a ready-to-use PostgreSQL database for d
 - **Database**: PostgreSQL 18.1
 - **Admin Interface**: pgAdmin 4 for database management
 - **Ports**: Database on 5432, pgAdmin on 5050
-- **Credentials**: 
+- **Credentials**:
   - DB: myuser/mypassword, database: mydatabase
   - pgAdmin: admin@example.com/adminpassword
 
 This setup ensures a consistent development environment without requiring local PostgreSQL installation.
 yarn dlx turbo build
 pnpm exec turbo build
-```
+
+````
 
 You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
 
@@ -110,7 +143,7 @@ With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#gl
 
 ```sh
 turbo build --filter=docs
-```
+````
 
 Without global `turbo`:
 
