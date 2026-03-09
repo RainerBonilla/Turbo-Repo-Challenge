@@ -1,3 +1,5 @@
+"use client";
+
 interface DeleteConfirmationDialogProps {
   isOpen: boolean;
   taskTitle: string;
@@ -36,7 +38,9 @@ export function DeleteConfirmationDialog({
               </svg>
             </div>
             <div className="ml-3 sm:ml-4">
-              <h3 className="text-base sm:text-lg font-medium text-gray-900">Delete Task</h3>
+              <h3 className="text-base sm:text-lg font-medium text-gray-900">
+                Delete Task
+              </h3>
             </div>
           </div>
 

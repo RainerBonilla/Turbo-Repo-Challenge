@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { z } from "zod";
 import { Task, TaskPriority, TaskStatus } from "@repo/schemas";
@@ -7,8 +9,7 @@ import {
   TaskStatusType,
   TaskPriorityType,
 } from "@/lib/api";
-import { InlineLoading } from "./InlineLoading";
-import { useToast } from "./ToastProvider";
+import { useToast } from "../toast";
 
 // Validation schemas
 const createTaskSchema = z.object({
@@ -78,8 +79,8 @@ interface FormData {
   description: string;
   status: TaskStatusType;
   priority: TaskPriorityType;
-  dueDate?: string; // Use empty string instead of undefined for controlled inputs
-  assignee: string; // Use empty string instead of undefined for controlled inputs
+  dueDate?: string;
+  assignee: string;
 }
 
 export function TaskForm({
@@ -94,8 +95,8 @@ export function TaskForm({
     description: "",
     status: "pending" as TaskStatusType,
     priority: "medium" as TaskPriorityType,
-    dueDate: "", // Use empty string for controlled input
-    assignee: "", // Use empty string for controlled input
+    dueDate: "",
+    assignee: "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -185,7 +186,9 @@ export function TaskForm({
       await onSubmit(submitData as CreateTaskData | UpdateTaskData);
     } catch (error) {
       console.error("Form submission error:", error);
-      showError(error);
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to submit form";
+      showError(errorMessage);
     }
   };
 

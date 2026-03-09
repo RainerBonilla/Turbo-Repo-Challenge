@@ -7,14 +7,13 @@ import { TaskCard } from "./TaskCard";
 import { TaskForm } from "./TaskForm";
 import { TaskFilters as TaskFiltersComponent } from "./TaskFilters";
 import { DeleteConfirmationDialog } from "./DeleteConfirmationDialog";
-import { SkeletonLoader } from "./SkeletonLoader";
-import { SearchLoading } from "./SearchLoading";
+import { SkeletonLoader } from "../loading";
+import { SearchLoading } from "../loading";
 import { TaskFilters } from "@/lib/api";
+import { LoadingSpinner } from "../loading";
+import { useToast } from "../toast";
+import { ErrorDisplay } from "../error";
 import { TaskStatsComponent } from "./TaskStats";
-import { LoadingSpinner } from "./LoadingSpinner";
-import { useToast } from "./ToastProvider";
-import { ErrorHandler } from "@/lib/errorHandler";
-import { ErrorDisplay } from "./ErrorDisplay";
 
 type ViewMode = "list" | "create" | "edit";
 
@@ -58,10 +57,9 @@ export function TaskManager() {
       setViewMode("list");
       showSuccess("Task created successfully!");
     } catch (error) {
-      showError(error, {
-        label: "Try Again",
-        onClick: () => handleCreateTask(data),
-      });
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to create task";
+      showError(errorMessage);
     } finally {
       setFormLoading(false);
     }
@@ -78,10 +76,9 @@ export function TaskManager() {
       setEditingTask(null);
       showSuccess("Task updated successfully!");
     } catch (error) {
-      showError(error, {
-        label: "Try Again",
-        onClick: () => handleUpdateTask(data),
-      });
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to update task";
+      showError(errorMessage);
     } finally {
       setFormLoading(false);
     }
@@ -109,10 +106,9 @@ export function TaskManager() {
       setDeleteDialog({ isOpen: false, task: null });
       showSuccess("Task deleted successfully!");
     } catch (error) {
-      showError(error, {
-        label: "Try Again",
-        onClick: confirmDeleteTask,
-      });
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to delete task";
+      showError(errorMessage);
     } finally {
       setFormLoading(false);
     }

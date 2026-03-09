@@ -1,4 +1,4 @@
-import { TaskManager } from '@/components/TaskManager';
+import { TaskManager } from "@/components/tasks";
 
 export default function Home() {
   return <TaskManager />;

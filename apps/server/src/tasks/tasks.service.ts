@@ -48,7 +48,7 @@ export class TasksService {
 
     const orderBy: any = {};
     if (query.sortBy) {
-      orderBy[query.sortBy] = 'asc';
+      orderBy[query.sortBy] = 'desc';
     }
 
     return this.database.task.findMany({ where, orderBy });

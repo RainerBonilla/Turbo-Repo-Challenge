@@ -1,3 +1,5 @@
+"use client";
+
 import { Task } from "@repo/schemas";
 
 interface TaskCardProps {

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Task, TaskStats } from "@repo/schemas";
 import { TaskFilters, CreateTaskData, UpdateTaskData } from "../api";
-import { ErrorHandler, AppError } from "../errorHandler";
+import { ErrorHandler, AppError } from "../../components/error";
 
 export function useTasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
