@@ -1,3 +1,5 @@
+"use client";
+
 import { TaskFilters as TaskFiltersType } from "@/lib/api";
 
 interface TaskFiltersProps {
@@ -111,7 +113,7 @@ export function TaskFilters({ filters, onFiltersChange }: TaskFiltersProps) {
             onChange={(e) => handleFilterChange("sortBy", e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="">Default Order</option>
+            <option value="">Unordered</option>
             <option value="dueDate">Due Date</option>
             <option value="priority">Priority</option>
             <option value="createdAt">Created Date</option>

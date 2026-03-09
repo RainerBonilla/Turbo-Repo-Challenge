@@ -6,7 +6,6 @@ import {
   TaskPriority,
   TaskSortBy,
 } from "@repo/schemas";
-import { AppError, ErrorHandler } from "./errorHandler";
 
 export type TaskStatusType = z.infer<typeof TaskStatus>;
 export type TaskPriorityType = z.infer<typeof TaskPriority>;
@@ -77,7 +76,9 @@ class ApiClient {
     } catch (error) {
       // Re-throw network errors and other fetch errors
       if (error instanceof TypeError && error.message.includes("fetch")) {
-        throw new Error("Network error: Unable to connect to the server. Please check your internet connection.");
+        throw new Error(
+          "Network error: Unable to connect to the server. Please check your internet connection.",
+        );
       }
       throw error;
     }

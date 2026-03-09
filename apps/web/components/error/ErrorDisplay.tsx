@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { AppError, ErrorHandler } from "../lib/errorHandler";
+import { AppError, ErrorHandler } from "./";
 
 interface ErrorDisplayProps {
   error: AppError;
