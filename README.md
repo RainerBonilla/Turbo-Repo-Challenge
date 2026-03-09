@@ -147,8 +147,6 @@ The collaboration balanced AI efficiency with human architectural decisions, ens
 
 ## Trade-offs
 
-## Trade-offs
-
 ### Technology Choices
 
 #### Server App: NestJS
