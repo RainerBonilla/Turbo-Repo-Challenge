@@ -1,53 +1,105 @@
-# Turborepo starter
+# Turbo Repo Challenge
 
-This Turborepo starter is maintained by the Turborepo core team.
+## Project Overview
 
-## Using this example
+The Turbo Repo Challenge is a full-stack task management application built using a monorepo architecture with Turborepo. The application allows users to create, read, update, and delete tasks through a modern web interface, backed by a robust API server.
 
-Run the following command:
+### Clean Architecture Implementation
 
-```sh
-npx create-turbo@latest
-```
+This project follows clean architecture principles to ensure maintainability, testability, and separation of concerns:
 
-## What's inside?
+- **Presentation Layer**: The web app (Next.js) handles user interactions and displays data.
+- **Application Layer**: Controllers and services in the server app orchestrate business logic.
+- **Domain Layer**: Business entities and rules are defined in the core modules.
+- **Infrastructure Layer**: Database interactions via Prisma ORM, external APIs, and utilities.
 
-This Turborepo includes the following packages/apps:
+The architecture promotes:
+- Dependency inversion (inner layers don't depend on outer layers)
+- Single responsibility principle across modules
+- Easy testing through dependency injection
+- Scalable codebase with clear boundaries
 
-### Apps and Packages
+## Apps and Tech Stack
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+### Server App
+A RESTful API built with **NestJS** that provides task management endpoints. It uses **Prisma** as the ORM for database interactions with **PostgreSQL**.
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+- **Tech Stack**: NestJS, TypeScript, Prisma, PostgreSQL, Swagger (for API documentation)
+- **Features**: CRUD operations for tasks, error handling, validation, modular architecture
 
-### Utilities
+### Web App
+A modern single-page application built with **Next.js** for task management. It provides an intuitive UI for users to interact with tasks.
 
-This Turborepo has some additional tools already setup for you:
+- **Tech Stack**: Next.js, React, TypeScript, Tailwind CSS
+- **Features**: Task listing, creation, editing, filtering, real-time updates, responsive design
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+## Installation and Setup
 
-### Build
+### Prerequisites
+- **Node.js** version 18 or higher
+- **pnpm** package manager (version 10.11.0)
+- **Docker** and Docker Compose for database setup
 
-To build all apps and packages, run the following command:
+### Steps to Run
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+1. **Clone the repository**:
+   ```bash
+   git clone <repository-url>
+   cd turbo-repo-challenge
+   ```
 
-```sh
-cd my-turborepo
-turbo build
-```
+2. **Install dependencies**:
+   ```bash
+   pnpm install
+   ```
 
-Without global `turbo`, use your package manager:
+3. **Set up the database**:
+   ```bash
+   docker-compose up -d
+   ```
+   This starts a PostgreSQL database and pgAdmin interface for development.
 
-```sh
-cd my-turborepo
-npx turbo build
+4. **Run database migrations** (for the server):
+   ```bash
+   cd apps/server
+   npx prisma migrate dev
+   cd ../..
+   ```
+
+5. **Start the development servers**:
+   ```bash
+   pnpm dev
+   ```
+   This will start both the server (typically on port 3001) and web app (on port 3000) concurrently.
+
+6. **Access the application**:
+   - Web app: http://localhost:3000
+   - API server: http://localhost:3001
+   - pgAdmin: http://localhost:5050 (admin@example.com / adminpassword)
+
+## Environment Requirements
+
+### Server App
+- **Node.js**: >=18
+- **Database**: PostgreSQL (provided via Docker Compose)
+- **Environment Variables**: Database connection string (configured in Prisma)
+
+### Web App
+- **Node.js**: >=18
+- **Browser**: Modern browser with JavaScript enabled
+
+## Docker Compose Database Setup
+
+The `docker-compose.yaml` file provides a ready-to-use PostgreSQL database for development:
+
+- **Database**: PostgreSQL 18.1
+- **Admin Interface**: pgAdmin 4 for database management
+- **Ports**: Database on 5432, pgAdmin on 5050
+- **Credentials**: 
+  - DB: myuser/mypassword, database: mydatabase
+  - pgAdmin: admin@example.com/adminpassword
+
+This setup ensures a consistent development environment without requiring local PostgreSQL installation.
 yarn dlx turbo build
 pnpm exec turbo build
 ```
